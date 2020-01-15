@@ -7,6 +7,7 @@ import {
   Patch,
   Delete
 } from "@nestjs/common";
+
 import { ProductsService } from "./products.service";
 
 @Controller("products")
@@ -14,46 +15,66 @@ export class ProductsController {
   constructor(private readonly productService: ProductsService) {}
 
   @Post()
-  addProduct(
+  async addProduct(
     @Body("title") prodtitle: string,
     @Body("description") prodDescription: string,
     @Body("price") prodPrice: number
-  ): any {
-    const genareatedId = this.productService.insertProduct(
-      prodtitle,
-      prodDescription,
-      prodPrice
-    );
-    return { id: genareatedId };
+  ) {
+    try {
+      const createdProduct = await this.productService.insertProduct(
+        prodtitle,
+        prodDescription,
+        prodPrice
+      );
+      return createdProduct;
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Get()
-  getAllProducts() {
-    return this.productService.getProducts();
+  async getAllProducts() {
+    try {
+      return this.productService.getProducts();
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Get(":id")
-  getproduct(@Param("id") prodId: string) {
-    return this.productService.getSingleProduct(prodId);
+  async getproduct(@Param("id") prodId: string) {
+    try {
+      return this.productService.getSingleProduct(prodId);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Patch(":id")
-  updateProduct(
+  async updateProduct(
     @Param("id") prodId,
     @Body("title") prodtitle: string,
     @Body("description") prodDescription: string,
     @Body("price") prodPrice: number
   ) {
-    return this.productService.updateProduct(
-      prodId,
-      prodtitle,
-      prodDescription,
-      prodPrice
-    );
+    try {
+      return await this.productService.updateProduct(
+        prodId,
+        prodtitle,
+        prodDescription,
+        prodPrice
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Delete(":id")
-  deleteProduct(@Param("id") prodId) {
-    return this.productService.deleteProduct(prodId);
+  async deleteProduct(@Param("id") prodId) {
+    try {
+      return await this.productService.deleteProduct(prodId);
+    } catch (error) {
+      throw error;
+    }
   }
 }
